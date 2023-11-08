@@ -27,7 +27,6 @@ class Program
         await program.Run();
     }
 
-
     public async Task Run()
     {
         try

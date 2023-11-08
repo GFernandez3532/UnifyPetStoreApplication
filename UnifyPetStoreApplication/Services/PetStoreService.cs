@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
-using UnifyPetStoreApplication.Classes; // Assuming the Pet class is in this namespace
+﻿using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using UnifyPetStoreApplication.Classes;
 using UnifyPetStoreApplication.Services.Interfaces;
 
 public class PetStoreService : IPetStoreService
@@ -23,6 +24,9 @@ public class PetStoreService : IPetStoreService
         {
             string responseContent = await response.Content.ReadAsStringAsync();
 
+            //Basic Sanitation of data
+            responseContent = SanitizeResponseContent(responseContent);
+
             try
             {
                 petsFromAPI = JsonConvert.DeserializeObject<List<Pet>>(responseContent);
@@ -37,8 +41,6 @@ public class PetStoreService : IPetStoreService
         else
         {
             Console.WriteLine("API request failed with status code: " + response.StatusCode);
-            
-
         }
 
         //If no errors have been logged, group pets by category and return it.
@@ -61,6 +63,15 @@ public class PetStoreService : IPetStoreService
             .ToDictionary(group => group.Key ?? "not available", group => group.ToList());
 
         return groupedPets;
+    }
+
+    private string SanitizeResponseContent(string content)
+    {
+        //regular expression to remove curly braces with alphanumeric content
+        string pattern = @"\{[a-zA-Z0-9]*\}";
+        string sanitizedContent = Regex.Replace(content, pattern, string.Empty);
+
+        return sanitizedContent;
     }
 
 }

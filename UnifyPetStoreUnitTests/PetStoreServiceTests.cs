@@ -96,8 +96,8 @@ namespace UnifyPetStoreApplicationUnitTests
             // Check if the grouping is correct
             Assert.IsTrue(groupedPets.ContainsKey("Mammal"));
             Assert.IsTrue(groupedPets.ContainsKey("not available"));
-            Assert.AreEqual(2, groupedPets["Mammal"].Count);
-            Assert.AreEqual(1, groupedPets["not available"].Count);
+            Assert.That(groupedPets["Mammal"].Count, Is.EqualTo(2));
+            Assert.That(groupedPets["not available"].Count, Is.EqualTo(1));
         }
     }
 }
